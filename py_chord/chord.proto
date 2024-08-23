@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package chord;
+
+service ChordService {
+  rpc IsAlive (Empty) returns (BoolValue);
+  rpc GetPredecessor (Empty) returns (Node);
+  rpc SetPredecessor (Node) returns (Empty);
+  rpc GetSuccessor (Empty) returns (Node);
+  rpc SetSuccessor (Node) returns (Empty);
+  rpc FindSuccessor (IdRequest) returns (Node);
+  rpc UpdateFingerTable (UpdateFingerTableRequest) returns (Empty);
+  rpc Store (StoreRequest) returns (KeyResponse);
+  rpc Get (KeyRequest) returns (ValueResponse);
+  rpc ClosestPrecedingFinger (IdRequest) returns (Node);
+  rpc Notify (Node) returns (Empty);
+}
+
+message Empty {}
+
+message BoolValue {
+  bool value = 1;
+}
+
+message Node {
+  string ip = 1;
+  int32 port = 2;
+  int64 id = 3;
+}
+
+message IdRequest {
+  int64 id = 1;
+}
+
+message UpdateFingerTableRequest {
+  Node node = 1;
+  int32 index = 2;
+}
+
+message StoreRequest {
+  bytes value = 1;
+}
+
+message KeyResponse {
+  int64 key = 1;
+}
+
+message KeyRequest {
+  int64 key = 1;
+}
+
+message ValueResponse {
+  bytes value = 1;
+}

@@ -2,10 +2,12 @@ import asyncio
 from hashlib import sha1
 from typing import Any
 
-from . import rpc
-from .abc import INode, INodeServer
-from .errors import InvalidRPC, NodeLeaveError
-from .network import is_between_ids, ChordNetwork, CHORD_PORT, MAINTENANCE_FREQUENCY
+import grpc
+import chord_pb2
+import chord_pb2_grpc
+from abc import INode, INodeServer
+from errors import InvalidRPC, NodeLeaveError
+from network import is_between_ids, ChordNetwork, CHORD_PORT, MAINTENANCE_FREQUENCY
 
 
 def node_leave_corrector(func, retry_time=MAINTENANCE_FREQUENCY, max_retries=2):

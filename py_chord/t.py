@@ -1,7 +1,7 @@
 import grpc
 import chord_pb2
 import chord_pb2_grpc
-from py_chord.abc import IChordNetwork, INode
+from .abc import IChordNetwork, INode
 from typing import List
 
 CHORD_PORT = 6666

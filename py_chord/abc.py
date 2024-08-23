@@ -2,10 +2,9 @@ from abc import abstractmethod, ABC
 from hashlib import sha1
 from typing import Any
 
-ID_LENGTH = sha1().digest_size * 8  # Digest size returns bytes amount. not bits amount
+ID_LENGTH = sha1().digest_size * 8
 
-
-class IDHT(ABC):  # This is the main public API calls
+class IDHT(ABC):
     @abstractmethod
     async def store(self, value: bytes) -> int:
         pass
@@ -18,7 +17,6 @@ class IDHT(ABC):  # This is the main public API calls
     async def leave(self) -> None:
         pass
 
-
 class INode(IDHT, ABC):
     def __init__(self, ip: str, port: int):
         self.ip = ip
@@ -26,9 +24,15 @@ class INode(IDHT, ABC):
         hash = sha1()
         hash.update(ip.encode())
         hash.update(port.to_bytes(2, "big"))
-        self.id = int.from_bytes(
-            hash.digest(), "big"
-        )  # SHA-1 result is casted to an integer
+        self.id = int.from_bytes(hash.digest(), "big")
+
+    @abstractmethod
+    async def start_grpc_server(self):
+        pass
+
+    @abstractmethod
+    async def stop_grpc_server(self):
+        pass
 
     @abstractmethod
     async def _is_alive(self):
@@ -65,25 +69,6 @@ class INode(IDHT, ABC):
     @abstractmethod
     async def _update_finger_table(self, node: "INode", index: int) -> None:
         pass
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, INode) and self.ip == other.ip and self.port == other.port
-        )
-
-    def __hash__(self):
-        return hash(self.id)
-
-
-class INodeServer(ABC):
-    @abstractmethod
-    async def _start_server(self):
-        pass
-
-    @abstractmethod
-    async def _stop_server(self):
-        pass
-
 
 class IChordNetwork(ABC):
     @abstractmethod
